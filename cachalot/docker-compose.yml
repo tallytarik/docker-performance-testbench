@@ -19,13 +19,10 @@ services:
       # APC Support is by enabled by default, but in some cases it can cause issues, change to 0 to disable:
       APC: 1
 
-
-################################################
-### Do not change anything below here, unless you know what know what you are doing.
       VIRTUAL_HOST: *hostname
-    image: amazeeio/drupal:php70-basic
+    image: amazeeio/drupal:php71-basic
     volumes:
       - .:/var/www/drupal/public_html
-      - ../composer-cache:/var/www/drupal/.composer/cache
+      - ../composer-cache:/root/.composer/cache
     container_name: *hostname
     network_mode: bridge

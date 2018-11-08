@@ -7,7 +7,7 @@ function setupCache {
   mkdir -p composer-cache drupal
 
   mkdir -p composer-cache
-  COMPOSER_CACHE_DIR=$PWD/composer-cache composer create-project amazeeio/drupal-project:8.x-dev drupal --no-interaction &> /dev/null
+  COMPOSER_CACHE_DIR=$PWD/composer-cache composer create-project amazeeio/drupal-project:8.x-dev drupal --no-interaction
 }
 
 setupCache

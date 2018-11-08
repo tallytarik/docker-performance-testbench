@@ -23,9 +23,9 @@ services:
 ################################################
 ### Do not change anything below here, unless you know what know what you are doing.
       VIRTUAL_HOST: *hostname
-    image: amazeeio/drupal:php70-basic
+    image: amazeeio/drupal:php71-basic
     volumes:
       - .:/var/www/drupal/public_html:cached
-      - ../composer-cache:/var/www/drupal/.composer/cache:cached
+      - ../composer-cache:/root/.composer/cache:cached
     container_name: *hostname
     network_mode: bridge
