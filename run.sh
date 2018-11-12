@@ -50,15 +50,15 @@ function runTest {
   popd || exit
 }
 
-# colorecho "### CACHALOT"
-# # Loading env variables so that we use Cachalot (Docker Machine)
-# cachalot up >/dev/null
-# eval $(amazeeio-cachalot env)
+colorecho "### CACHALOT"
+# Loading env variables so that we use Cachalot (Docker Machine)
+cachalot up >/dev/null
+eval $(amazeeio-cachalot env)
 
-# runTest cachalot
+runTest cachalot
 
-# # Removing Cachalot Docker Environment Variables again, now we use Docker for Mac
-# # see https://docs.docker.com/docker-for-mac/docker-toolbox/
+# Removing Cachalot Docker Environment Variables again, now we use Docker for Mac
+# see https://docs.docker.com/docker-for-mac/docker-toolbox/
 cachalot halt >/dev/null
 unset ${!DOCKER_*}
 
