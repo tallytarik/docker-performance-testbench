@@ -7,4 +7,6 @@
 /cachalot/*
 !/cachalot/docker-compose.yml
 composer-cache
+base
 drupal
+vendor

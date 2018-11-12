@@ -14,51 +14,51 @@ function colorecho {
 
 
 function runTest {
-  pushd $1 >/dev/null
+  pushd "$1" || exit
 
   colorecho "### $1: removing old containers"
   printtime docker-compose down -v >/dev/null || true
+  chmod -R +w ./ || true
+  rm -rf drupal
+
+  colorecho "### $1: cloning base repo"
+  printtime git clone https://github.com/amazeeio/drupal-example.git drupal
 
   colorecho "### $1: starting container"
   printtime docker-compose up -d --force >/dev/null
 
-  colorecho "### $1: remove existing mysql config"
-  printtime docker-compose exec drupal bash -c 'rm /root/.my.cnf'
-
-  colorecho "### $1: remove existing drupal folder config"
-  printtime docker-compose exec drupal bash -c 'chmod -R +w drupal && rm -rf drupal >/dev/null'
-
-  colorecho "### $1: composer create project"
-  printtime docker-compose exec drupal bash -c 'composer create-project amazeeio/drupal-project:8.x-dev drupal --no-interaction --prefer-dist >/dev/null'
+  colorecho "### $1: composer install"
+  printtime docker-compose exec cli bash -c 'composer install --no-dev --no-interaction'
 
   colorecho "### $1: drush site install 3x"
   for i in `seq 1 3`;
   do
-      printtime docker-compose exec drupal bash -c 'cd drupal/web && drush -y si --account-name=blub --account-mail=bla@bla.com >/dev/null'
+      printtime docker-compose exec cli bash -c 'cd web && drush -y si config_installer --account-name=blub --account-mail=bla@bla.com'
   done
-
 
   colorecho "### $1: drush cr 3x"
   for i in `seq 1 3`;
   do
-      printtime docker-compose exec drupal bash -c 'cd drupal/web && drush -y cr >/dev/null'
+      printtime docker-compose exec cli bash -c 'cd web && drush -y cr'
   done
 
-  colorecho "### $1: removing containers"
+  colorecho "### $1: removing container and data"
   printtime docker-compose down -v >/dev/null || true
+  chmod -R +w ./ || true
+  rm -rf drupal
 
-  popd >/dev/null
+  popd || exit
 }
 
-colorecho "### CACHALOT"
-# Loading env variables so that we use Cachalot (Docker Machine)
-cachalot up >/dev/null
-eval $(amazeeio-cachalot env)
+# colorecho "### CACHALOT"
+# # Loading env variables so that we use Cachalot (Docker Machine)
+# cachalot up >/dev/null
+# eval $(amazeeio-cachalot env)
 
-runTest cachalot
+# runTest cachalot
 
-# Removing Cachalot Docker Environment Variables again, now we use Docker for Mac
-# see https://docs.docker.com/docker-for-mac/docker-toolbox/
+# # Removing Cachalot Docker Environment Variables again, now we use Docker for Mac
+# # see https://docs.docker.com/docker-for-mac/docker-toolbox/
 cachalot halt >/dev/null
 unset ${!DOCKER_*}
 
